@@ -5,7 +5,6 @@
 var numDifferentIntegers = function (word) {
   let map = {};
   let start = -1;
-  let midStart = -1;
   for (let i = 0; i < word.length; i++) {
     let char = word.charAt(i);
 
@@ -13,25 +12,22 @@ var numDifferentIntegers = function (word) {
       if (start == -1) {
         start = i;
       }
-      if (char == !"0") {
-      }
     } else {
       if (start != -1) {
         // if (i != word.length - 1) {
-        let sub = word.substring(start, i);
+        let sub = BigInt(word.substring(start, i));
         if (map[sub] === undefined) {
           map[sub] = 1;
         } else {
           map[sub]++;
         }
         start = -1;
-        midStart = -1;
       }
     }
   }
 
   if (start != -1) {
-    let sub = word.substring(start);
+    let sub = BigInt(word.substring(start));
 
     if (map[sub] === undefined) {
       map[sub] = 1;
