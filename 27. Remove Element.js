@@ -4,23 +4,23 @@
  * @return {number}
  */
 var removeElement = function (nums, val) {
-  let count = 0;
-  let size = nums.length;
-  let j = 1;
+  const leng = nums.length;
 
-  for (let i = 0; i < size; i++) {
-    if (nums[i] !== val && nums[i] !== "-") {
-      count++;
-    } else {
-      for (; j < size; j++) {
-        if (nums[j] !== val && nums[i] !== "-") break;
-      }
-      nums[i] = nums[j];
-      nums[j++] = "-";
+  nums.sort();
+
+  const start = nums.findIndex((e) => e === val);
+  if (start == -1) {
+    return leng;
+  } else {
+    const end = nums.lastIndexOf(val);
+
+    for (let i = start; i <= end; i++) {
+      nums[i] = 51;
     }
+    const count = leng - (end - start + 1);
+    nums.sort((a, b) => a - b);
+    return count;
   }
-
-  return count;
 };
 
-console.log(removeElement([0, 1, 2, 2, 3, 0, 4, 2], 2));
+console.log(removeElement([2], 3));
