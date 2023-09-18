@@ -10,7 +10,7 @@ class MinHeap {
 
     while (
       parentIndex !== 0 &&
-      !this.compare(this.heap[parentIndex],this.heap[currentIndex])
+      !this.compare(this.heap[parentIndex], this.heap[currentIndex])
     ) {
       this._swap(currentIndex, parentIndex);
       currentIndex = parentIndex;
@@ -31,9 +31,9 @@ class MinHeap {
 
     while (
       (this.heap[leftIndex] &&
-        !this.compare(this.heap[currentIndex],this.heap[leftIndex],)) ||
+        !this.compare(this.heap[currentIndex], this.heap[leftIndex])) ||
       (this.heap[rightIndex] &&
-        !this.compare(this.heap[currentIndex],this.heap[rightIndex]))
+        !this.compare(this.heap[currentIndex], this.heap[rightIndex]))
     ) {
       if (this.heap[leftIndex] === undefined) {
         this._swap(rightIndex, currentIndex);
@@ -87,7 +87,9 @@ var snakesAndLadders = function (board) {
   const priority_queue = new MinHeap();
 
   // 방문여부
-  const visited = Array.from(Array(size), () => Array(size).fill(false));
+  const visited = Array.from(Array(size), () =>
+    Array(size).fill({ start: false, finish: false })
+  );
 
   // 목적 위치, 이동해왔는지 여부
   priority_queue.push({ row: size - 1, col: 0, moved: false, depth: 0 });
@@ -95,11 +97,13 @@ var snakesAndLadders = function (board) {
   while (!priority_queue.isEmpty()) {
     const { row, col, moved, depth } = priority_queue.pop();
     if (row == lastRow && col == lastCol) return depth;
-    if (visited[row][col]) continue;
+    // if (visited[row][col]) continue;
 
     // 사다리 or 뱀이 없거나, 이미 타고온 상태
     if (board[row][col] == -1 || moved) {
-      visited[row][col] = true;
+      visited[row][col].finish = true;
+      if (board[row][col] == -1) visited[row][col].start = true;
+
       const nowLabel = changeCoordToBous(row, col, size);
       for (let i = 1; i <= 6; i++) {
         const nextLabel = nowLabel + i;
@@ -119,7 +123,7 @@ var snakesAndLadders = function (board) {
         });
       }
     } else {
-      const next = changeBousToCoord(board[row][col],size);
+      const next = changeBousToCoord(board[row][col], size);
       priority_queue.push({
         row: next.row,
         col: next.col,
@@ -141,15 +145,24 @@ const changeCoordToBous = (row, col, size) => {
 };
 // 부스트로페돈 => 좌표계
 const changeBousToCoord = (label, size) => {
-  const tempNum1 = parseInt((label-1) / size);
-  const tempNum2 = (label-1) % size;
+  const tempNum1 = parseInt((label - 1) / size);
+  const tempNum2 = (label - 1) % size;
 
   const changedRow = size - 1 - tempNum1;
-  const changedCol = tempNum1 % 2 == 0 ? tempNum2: size-1 - tempNum2;
+  const changedCol = tempNum1 % 2 == 0 ? tempNum2 : size - 1 - tempNum2;
 
   return { row: changedRow, col: changedCol };
 };
 
 console.log(
-  snakesAndLadders([[-1,-1,-1,46,47,-1,-1,-1],[51,-1,-1,63,-1,31,21,-1],[-1,-1,26,-1,-1,38,-1,-1],[-1,-1,11,-1,14,23,56,57],[11,-1,-1,-1,49,36,-1,48],[-1,-1,-1,33,56,-1,57,21],[-1,-1,-1,-1,-1,-1,2,-1],[-1,-1,-1,8,3,-1,6,56]])
+  snakesAndLadders([
+    [-1, -1, -1, 46, 47, -1, -1, -1],
+    [51, -1, -1, 63, -1, 31, 21, -1],
+    [-1, -1, 26, -1, -1, 38, -1, -1],
+    [-1, -1, 11, -1, 14, 23, 56, 57],
+    [11, -1, -1, -1, 49, 36, -1, 48],
+    [-1, -1, -1, 33, 56, -1, 57, 21],
+    [-1, -1, -1, -1, -1, -1, 2, -1],
+    [-1, -1, -1, 8, 3, -1, 6, 56],
+  ])
 );
