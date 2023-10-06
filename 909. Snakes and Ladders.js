@@ -87,13 +87,13 @@ var snakesAndLadders = function (board) {
   const priority_queue = new MinHeap();
 
   // 방문여부
-  const visited = Array.from(Array(size), () =>
-    Array(size).fill({ start: false, finish: false })
+  const visited = Array.from({length:size}, () =>
+  Array.from({length:size},()=>[false,false])
   );
 
   // 목적 위치, 이동해왔는지 여부
   priority_queue.push({ row: size - 1, col: 0, moved: false, depth: 0 });
-
+  
   while (!priority_queue.isEmpty()) {
     const { row, col, moved, depth } = priority_queue.pop();
     if (row == lastRow && col == lastCol) return depth;
@@ -101,8 +101,9 @@ var snakesAndLadders = function (board) {
 
     // 사다리 or 뱀이 없거나, 이미 타고온 상태
     if (board[row][col] == -1 || moved) {
-      visited[row][col].finish = true;
-      if (board[row][col] == -1) visited[row][col].start = true;
+      if(visited[row][col][1]==true) continue;
+      visited[row][col][1] = true;
+      if (board[row][col] == -1) visited[row][col][0] = true;
 
       const nowLabel = changeCoordToBous(row, col, size);
       for (let i = 1; i <= 6; i++) {
@@ -123,7 +124,9 @@ var snakesAndLadders = function (board) {
         });
       }
     } else {
+      if(visited[row][col][0]==true) continue;
       const next = changeBousToCoord(board[row][col], size);
+      visited[row][col][0] = true;
       priority_queue.push({
         row: next.row,
         col: next.col,
